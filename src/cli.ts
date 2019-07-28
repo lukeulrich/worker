@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import getTasks from "./getTasks";
 import { RunnerOptions } from "./interfaces";
-import { run, runOnce } from "./index";
+import { migrateOnly, run, runOnce } from "./index";
 import * as yargs from "yargs";
 import { POLL_INTERVAL, CONCURRENT_JOBS } from "./config";
 
@@ -35,7 +35,14 @@ const argv = yargs
       "how long to wait between polling for jobs in milliseconds (for jobs scheduled in the future/retries)",
     default: POLL_INTERVAL,
   })
-  .number("poll-interval").argv;
+  .number("poll-interval")
+  .option("migrate-only", {
+    description:
+      "Run database migrations, then exit",
+    alias: "m",
+    default: false,
+  })
+  .boolean("migrate-only").argv;
 
 const isInteger = (n: number): boolean => {
   return isFinite(n) && Math.round(n) === n;
@@ -43,7 +50,8 @@ const isInteger = (n: number): boolean => {
 
 async function main() {
   const DATABASE_URL = argv.connection || process.env.DATABASE_URL || undefined;
-  const ONCE = argv.once;
+  const MIGRATE_ONLY = argv.migrateOnly;
+  const ONCE = argv.once || MIGRATE_ONLY;
   const WATCH = argv.watch;
 
   if (WATCH && ONCE) {
@@ -66,7 +74,9 @@ async function main() {
     taskList: watchedTasks.tasks,
   };
 
-  if (ONCE) {
+  if (MIGRATE_ONLY) {
+    await migrateOnly(options);
+  } else if (ONCE) {
     await runOnce(options);
   } else {
     const { promise } = await run(options);

@@ -59,6 +59,11 @@ const processOptions = async (options: RunnerOptions) => {
   }
 };
 
+export const migrateOnly = async (options: RunnerOptions): Promise<void> => {
+  const { release } = await processOptions(options);
+  await release();
+};
+
 export const runOnce = async (options: RunnerOptions): Promise<void> => {
   const { taskList, withPgClient, release } = await processOptions(options);
   await withPgClient(client => runTaskListOnce(taskList, client, options));

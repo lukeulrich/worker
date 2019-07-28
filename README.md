@@ -175,19 +175,20 @@ The following CLI options are available:
 
 ```
 Options:
-  --help            Show help                                          [boolean]
-  --version         Show version number                                [boolean]
-  --connection, -c  Database connection string, defaults to the 'DATABASE_URL'
-                    envvar                                              [string]
-  --once, -1        Run until there are no runnable jobs left, then exit
+  --help              Show help                                          [boolean]
+  --version           Show version number                                [boolean]
+  --connection, -c    Database connection string, defaults to the 'DATABASE_URL'
+                      envvar                                              [string]
+  --once, -1          Run until there are no runnable jobs left, then exit
                                                       [boolean] [default: false]
-  --watch, -w       [EXPERIMENTAL] Watch task files for changes, automatically
-                    reloading the task code without restarting worker
+  --watch, -w         [EXPERIMENTAL] Watch task files for changes, automatically
+                      reloading the task code without restarting worker
                                                       [boolean] [default: false]
-  --jobs, -j        number of jobs to run concurrently              [default: 1]
-  --poll-interval   how long to wait between polling for jobs in milliseconds
-                    (for jobs scheduled in the future/retries)
+  --jobs, -j          number of jobs to run concurrently              [default: 1]
+  --poll-interval     how long to wait between polling for jobs in milliseconds
+                      (for jobs scheduled in the future/retries)
                                                         [number] [default: 2000]
+  --migrate-only, -m  Run migrations and then exit
 ```
 
 ## Library usage
