@@ -10,7 +10,7 @@ alter table graphile_worker.job_queues enable row level security;
 
 create table graphile_worker.jobs (
   id bigserial primary key,
-  queue_name text default (public.gen_random_uuid())::text not null,
+  queue_name text default (gen_random_uuid())::text not null,
   task_identifier text not null,
   payload json default '{}'::json not null,
   priority int default 0 not null,
@@ -77,7 +77,7 @@ $$ language plpgsql;
 create trigger _900_notify_worker after insert on graphile_worker.jobs for each statement execute procedure graphile_worker.tg_jobs__notify_new_jobs();
 
 -- Function to queue a job
-create function graphile_worker.add_job(identifier text, payload json = '{}', queue_name text = public.gen_random_uuid()::text, run_at timestamptz = now(), max_attempts int = 25) returns graphile_worker.jobs as $$
+create function graphile_worker.add_job(identifier text, payload json = '{}', queue_name text = gen_random_uuid()::text, run_at timestamptz = now(), max_attempts int = 25) returns graphile_worker.jobs as $$
   insert into graphile_worker.jobs(task_identifier, payload, queue_name, run_at, max_attempts) values(identifier, payload, queue_name, run_at, max_attempts) returning *;
 $$ language sql;
 
